@@ -1,0 +1,142 @@
+
+<?php $query=mysqli_query($con,"select * FROM tblfirereport 
+join tbl_fireteam on tbl_fireteam.id=tblfirereport.assignTo
+    where tblfirereport.id='$rid'");
+$count=mysqli_num_rows($query);
+if($count>0){
+while($row=mysqli_fetch_array($query)){ ?>
+
+
+ <table>
+    <tr>
+    <th>Team Name</th> 
+    <td><?php echo $row['teamName'];?></td>
+    </tr>
+
+    <tr>
+    <th>Team Leader Name</th> 
+    <td><?php echo $row['teamLeaderName'];?></td>
+    </tr>
+
+
+    <tr>
+    <th>TL Mobile No.</th> 
+    <td><?php echo $row['teamLeadMobno'];?></td>
+    </tr>
+
+ <tr>
+    <th>Team Members</th> 
+    <td><?php echo $row['teamMembers'];?></td>
+    </tr>
+     <tr>
+    <th>Assigned Time</th> 
+    <td><?php echo $row['assignTime'];?></td>
+    </tr>
+
+</table>
+<?php } }  else {?>
+<>Not Assigned Yet</h4>
+<?php } ?>       
+
+<!------------------------------------------------------------------------------------------------------------------ -->
+<!-- Test Tracking History --->
+<?php
+$ret=mysqli_query($con,"select * from tblfirerequesthistory where requestId='$rid'");
+$num=mysqli_num_rows($ret);
+?>
+
+
+                       
+<?php if($num>0){
+?>
+ <table cellspacing="0">
+<tr>
+    <th>Remark</th>
+    <th>Status</th>
+    <th>Remark Date</th>
+<?php while($result=mysqli_fetch_array($ret)){?>
+</tr>
+    <tr>
+    <td><?php echo $result['remark'];?></td> 
+    <td><?php echo $result['status'];?></td>
+    <td><?php echo $result['postingDate'];?></td>
+    </tr>
+
+<?php } // End while loop?>
+
+</table>
+         <?php
+       //end if   
+     } else { ?>    
+<h4> No Tracking history found </h4>
+         <?php } ?>           
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+
+</form>
+<form method="post">
+          <p>  <select name="assignto" required="true">
+            <option value="">Select Team</option>
+            <?php $sql=mysqli_query($con,"select ID,teamName,teamLeaderName from tbl_fireteam");
+            while ($result=mysqli_fetch_array($sql)) {
+            ?>
+            <option value="<?php echo $result['ID'];?>"><?php echo $result['teamName'];?>-(<?php echo $result['teamLeaderName'];?>)</option>
+        <?php } ?>
+            </select></p>
+            <p>
+     <input type="submit" name="submit" id="submit">   </p> 
+   
+ 
+     
+        <button data-dismiss="modal">Close</button>
+      
+  </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Take Action Modal -->
+
+<form method="post" enctype="multipart/form-data" >
+          <p>  <select name="status" id="status" required="true">
+            <option value="">Select Action</option>
+  <?php 
+
+  $query1=mysqli_query($con,"select status from tblfirereport where id='$rid'");
+  while($result=mysqli_fetch_array($query1)):
+$rstatus=$result['status'];
+endwhile;
+  ?>
+
+            <?php if($rstatus=='Assigned'):?>
+            <option value="Team On the Way">Team On the Way</option>
+            <option value="Fire Relief Work in Progress">Fire Relief Work in Progress</option>
+            <option value="Request Completed">Request Completed</option>
+            <?php elseif($rstatus=='Team On the Way'):?>
+        <option value="Fire Relief Work in Progress">Fire Relief Work in Progress</option>
+            <option value="Request Completed">Request Completed</option>
+            <?php elseif($rstatus=='Fire Relief Work in Progress'):?>
+               <option value="Request Completed">Request Completed</option>
+         <?php endif;?>
+
+            </select>
+
+       <p>
+<textarea name="remark" required="true" rows="5"></textarea>  </p> 
+  <p>
+     <input type="submit" name="takeaction" id="submit">   </p> 
+   
+
+
+        <button type="button" c data-dismiss="modal">Close</button>
+    
+  </form>
